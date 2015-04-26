@@ -1,7 +1,7 @@
 {
   "name": "modularize",
   "description": "Provide AMD and CommonJS wrapping for traditional JavaScript.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "contributors": [
     {
       "name": "Ashley Brener",
@@ -10,7 +10,7 @@
   ],
   "main": "lib/",
   "engines": {
-    "node": ">= 0.8.x"
+    "node": ">= 0.10.x"
   },
   "bugs": {
     "url": "https://github.com/frisb/modularize/issues"
