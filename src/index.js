@@ -1,5 +1,5 @@
 export default function (options) {
-	let {input, deps, exports} = options;
+	let {input, deps, exports, type} = options;
 	deps = deps || [];
 
 	let params = '';
@@ -20,7 +20,7 @@ export default function (options) {
 		for (let path in dependency) {
 			let param = dependency[path];
 			let sep = i < deps.length - 1 ? ', ' : '';
-			
+
 			amdRequired += `'${path}'${sep}`;
 			commonJSRequired += `\t\tvar ${param} = require('${path}');\n`;
 			params += `${param}${sep}`;
@@ -31,7 +31,31 @@ export default function (options) {
 	if (exports)
 		returns = 'return ';
 
-	let output = `(function(root, factory) {
+	function content() {
+		let output = '';
+		let lines = input.replace(/\r\n/g, '\n').split('\n');
+		let len = lines.length;
+
+		for (let j = 0; j < len; j++) {
+			output += `\t${lines[j]}\n`;
+		}
+
+		return output + (exports ? `\n\treturn ${exports};` : '');
+	}
+
+	function amd() {
+		return `define([${amdRequired}], function(${params}) {
+${content()}
+});`;
+	}
+
+	function commonjs() {
+		return `${commonJSRequired}
+${content()}`;
+	}
+
+	function umd() {
+		return `(function(root, factory) {
 	if (typeof(define) === 'function' && define.amd) {
 		define([${amdRequired}], function(${params}) {
 			${returns}factory(${params});
@@ -44,14 +68,14 @@ ${commonJSRequired}
 	else {
 		${returns}factory(${rootParams});
 	}
-})(this, function(${params}) {\n`;
-
-	let lines = input.replace(/\r\n/g, '\n').split('\n');
-	let len = lines.length;
-
-	for (let j = 0; j < len; j++) {
-		output += `\t${lines[j]}\n`;
+})(this, function(${params}) {
+${content()}
+});`;
 	}
 
-	return output + (exports ? `\n\treturn ${exports}\n` : '') + `});`;
+	switch (type) {
+		case 'amd': return amd();
+		case 'common': return commonjs();
+		default: return umd();
+	}
 }

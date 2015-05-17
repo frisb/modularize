@@ -1,0 +1,10 @@
+		var riot = require('riot');
+		var $ = require('jquery');
+		var _ = require('underscore');
+		var CustomModule = require('/path/to/custom/module');
+
+	function Test() {
+	
+	}
+
+	return Test;

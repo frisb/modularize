@@ -1,0 +1,7 @@
+define(['riot', 'jquery', 'underscore', '/path/to/custom/module'], function(riot, $, _, CustomModule) {
+	function Test() {
+	
+	}
+
+	return Test;
+});
