@@ -1,6 +1,5 @@
 # modularize
 [![Build Status](https://travis-ci.org/frisb/fdboost.png)](http://travis-ci.org/frisb/modularize)
-[![Dependency Status](https://gemnasium.com/frisb/fdboost.svg)](https://gemnasium.com/frisb/modularize)
 [![Code Climate](https://codeclimate.com/github/frisb/modularize/badges/gpa.svg)](https://codeclimate.com/github/frisb/modularize)
 [![npm version](https://badge.fury.io/js/modularize.svg)](http://badge.fury.io/js/modularize)
 
