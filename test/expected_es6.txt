@@ -1,0 +1,10 @@
+import riot from 'riot';
+import $ from 'jquery';
+import _ from 'underscore';
+import CustomModule from '/path/to/custom/module';
+
+	function Test() {
+	
+	}
+
+	export default Test;

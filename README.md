@@ -3,7 +3,7 @@
 [![Code Climate](https://codeclimate.com/github/frisb/modularize/badges/gpa.svg)](https://codeclimate.com/github/frisb/modularize)
 [![npm version](https://badge.fury.io/js/modularize.svg)](http://badge.fury.io/js/modularize)
 
-> Provides AMD and CommonJS wrapping for traditional JavaScript.
+> Provides AMD, CommonJS and ES6 wrapping for traditional JavaScript.
 
 All contributions are welcome.
 
