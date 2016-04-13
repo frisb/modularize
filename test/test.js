@@ -25,6 +25,11 @@ function extend(out) {
 	return out;
 }
 
+function debugTest(type, output) {
+	fs.writeFileSync('test/expected_' + type + '.txt', output, 'utf8');
+	console.log(output);
+}
+
 var options ={
 	deps: [
 		'riot',
@@ -36,13 +41,23 @@ var options ={
 };
 
 describe('Modularize', function () {
+	it('should return es6 unwrapped code', function () {
+		var type = 'es6';
+		var input = fs.readFileSync('test/fixture.txt', 'utf8');
+		var expected = fs.readFileSync('test/expected_' + type + '.txt', 'utf8');
+
+		var output = Modularize(extend({}, options, { type: type, input: input }));
+		// debugTest(type, output);
+		assert.equal(output, expected);
+	});
+
 	it('should return AMD wrapped code', function () {
 		var type = 'amd';
 		var input = fs.readFileSync('test/fixture.txt', 'utf8');
 		var expected = fs.readFileSync('test/expected_' + type + '.txt', 'utf8');
 
 		var output = Modularize(extend({}, options, { type: type, input: input }));
-
+		// debugTest(type, output);
 		assert.equal(output, expected);
 	});
 
@@ -52,7 +67,7 @@ describe('Modularize', function () {
 		var expected = fs.readFileSync('test/expected_' + type + '.txt', 'utf8');
 
 		var output = Modularize(extend({}, options, { type: type, input: input }));
-
+		// debugTest(type, output);
 		assert.equal(output, expected);
 	});
 
@@ -62,7 +77,7 @@ describe('Modularize', function () {
 		var expected = fs.readFileSync('test/expected_' + type + '.txt', 'utf8');
 
 		var output = Modularize(extend({}, options, { input: input }));
-
+		// debugTest(type, output);
 		assert.equal(output, expected);
 	});
 });

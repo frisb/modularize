@@ -7,4 +7,4 @@
 	
 	}
 
-	return Test;
+	module.exports = Test;

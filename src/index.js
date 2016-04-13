@@ -1,9 +1,9 @@
-export default function (options) {
-	let {input, deps, exports, type} = options;
+export default function ({input, deps, exports, type}) {
 	deps = deps || [];
 
 	let params = '';
 	let rootParams = '';
+	let es6Required = '';
 	let amdRequired = '';
 	let commonJSRequired = '';
 	let returns = '';
@@ -21,6 +21,7 @@ export default function (options) {
 			let param = dependency[path];
 			let sep = i < deps.length - 1 ? ', ' : '';
 
+			es6Required += `import ${param} from '${path}';\n`;
 			amdRequired += `'${path}'${sep}`;
 			commonJSRequired += `\t\tvar ${param} = require('${path}');\n`;
 			params += `${param}${sep}`;
@@ -28,8 +29,21 @@ export default function (options) {
 		}
 	}
 
-	if (exports)
-		returns = 'return ';
+	if (exports) {
+		switch (type) {
+			case 'es6':
+				returns = 'export default';
+				break;
+
+			case 'common':
+				returns = 'module.exports =';
+				break;
+
+			default:
+				returns = 'return';
+				break;
+		}
+	}
 
 	function content() {
 		let output = '';
@@ -40,7 +54,12 @@ export default function (options) {
 			output += `\t${lines[j]}\n`;
 		}
 
-		return output + (exports ? `\n\treturn ${exports};` : '');
+		return output + (exports ? `\n\t${returns} ${exports};` : '');
+	}
+
+	function es6() {
+		return `${es6Required}
+${content()}`;
 	}
 
 	function amd() {
@@ -56,17 +75,17 @@ ${content()}`;
 
 	function umd() {
 		return `(function(root, factory) {
-	if (typeof(define) === 'function' && define.amd) {
+	if (typeof(define) === 'function' && typeof(define.amd) !== 'undefined') {
 		define([${amdRequired}], function(${params}) {
-			${returns}factory(${params});
+			${exports ? 'return ' : ''}factory(${params});
 		});
 	}
-	else if (typeof(module) !== 'undefined' && typeof module.exports !== 'undefined') {
+	else if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') {
 ${commonJSRequired}
-		${returns}factory(${params});
+		${exports ? 'module.exports = ' : ''}factory(${params});
 	}
 	else {
-		${returns}factory(${rootParams});
+		${exports ? 'root.' + exports + ' = ' : ''}factory(${rootParams});
 	}
 })(this, function(${params}) {
 ${content()}
@@ -74,6 +93,7 @@ ${content()}
 	}
 
 	switch (type) {
+		case 'es6': return es6();
 		case 'amd': return amd();
 		case 'common': return commonjs();
 		default: return umd();
